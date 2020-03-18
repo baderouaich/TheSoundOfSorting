@@ -4,10 +4,17 @@
 #include "olcPGEX_Sound.h"
 #include "RandomHelper.h"
 
-#define RECT_WIDTH 100
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 960
+#define PIXEL_WIDTH 1
+#define PIXEL_HEIGHT 1
+
+#define NUMBER_RECTS 100
+#define RECT_WIDTH (SCREEN_WIDTH / NUMBER_RECTS)
 #define RECT_MARGIN 1
-#define SORTING_DELAY 0.0f
+#define SORTING_DELAY 0.01f
 #define USE_AUDIO 1
+
 
 enum class SortingAlgorithm : uint8_t
 {
@@ -51,7 +58,7 @@ enum class SortingAlgorithm : uint8_t
 	ThreewayMergeSort
 };
 
-SortingAlgorithm sortingAlgorithm = SortingAlgorithm::BubbleSort;
+SortingAlgorithm sortingAlgorithm = SortingAlgorithm::SelectionSort;
 
 struct Rect
 {
@@ -215,49 +222,98 @@ private:
 		}
 		break;
 		case SortingAlgorithm::PancakeSorting:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::BinaryInsertionSort:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::BogoSortorPermutationSort:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::GnomeSort:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::SleepSortTheKingOfLazinessSortingwhileSleeping:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::StructureSorting:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::StoogeSort:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::TagSort:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::TreeSort:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::CartesianTreeSorting:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::OddEvenSortBrickSort:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::QuickSortonSinglyLinkedList:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::QuickSortonDoublyLinkedList:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::WayQuickSort:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::MergeSortLinkedLists:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::MergeSortDoublyLinkedList:
-			break;
+		{
+
+		}
+		break;
 		case SortingAlgorithm::ThreewayMergeSort:
-			break;
+		{
+
+		}
+		break;
 		default:
 			std::cerr << "Unsupported Sorting Algorithm.";
 			break;
 		}
 
-
-
 	}
 
-
+private:
 	int swapAudio;
 	void InitAudio()
 	{
@@ -270,6 +326,7 @@ private:
 		olc::SOUND::PlaySample(swapAudio);
 #endif
 	}
+
 private:
 	/*void GenRects() 
 	{
@@ -406,7 +463,7 @@ public:
 int main() 
 {
 	TheSoundOfSorting T;
-	if (T.Construct(1300, 960, 1, 1))
+	if (T.Construct(SCREEN_WIDTH, SCREEN_HEIGHT, PIXEL_WIDTH, PIXEL_HEIGHT))
 		T.Start();
 	return 0;
 }
