@@ -1,19 +1,19 @@
 #define OLC_PGE_APPLICATION
-#define OLC_PGEX_SOUND
 #include "olcPixelGameEngine.h"
-#include "olcPGEX_Sound.h"
+#define OLC_SOUNDWAVE
+#include "olcSoundWaveEngine.h"
 #include "RandomHelper.h"
 
-#define SCREEN_WIDTH 1600
+#define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 960
 #define PIXEL_WIDTH 1
 #define PIXEL_HEIGHT 1
 
-#define NUMBER_RECTS 100
+#define NUMBER_RECTS 80
 #define RECT_WIDTH (SCREEN_WIDTH / NUMBER_RECTS)
 #define RECT_MARGIN 1
-#define SORTING_DELAY 0.01f
-#define USE_AUDIO 1
+#define SORTING_DELAY 0.001L
+#define USE_AUDIO true
 
 
 enum class SortingAlgorithm : uint8_t
@@ -58,7 +58,7 @@ enum class SortingAlgorithm : uint8_t
 	ThreewayMergeSort
 };
 
-SortingAlgorithm sortingAlgorithm = SortingAlgorithm::SelectionSort;
+SortingAlgorithm sortingAlgorithm = SortingAlgorithm::BubbleSort;
 
 struct Rect
 {
@@ -96,6 +96,11 @@ private:
 		{
 		case SortingAlgorithm::SelectionSort:
 		{
+
+		}
+		break;
+		case SortingAlgorithm::BubbleSort:
+		{
 			/// Change back current rect's color into the default color WHITE.
 			if (currentRectPtr != nullptr && currentRectPtr->color == olc::RED)
 				currentRectPtr->color = olc::WHITE;
@@ -118,12 +123,6 @@ private:
 			}
 			currentRectIndex++;
 			comparisons++;
-
-		}
-		break;
-		case SortingAlgorithm::BubbleSort:
-		{
-			
 		}
 		break;
 		case SortingAlgorithm::RecursiveBubbleSort:
@@ -314,16 +313,17 @@ private:
 	}
 
 private:
-	int swapAudio;
+	inline static olc::sound::WaveEngine sound_engine;
+	olc::sound::Wave swap_audio;
 	void InitAudio()
 	{
-		olc::SOUND::InitialiseAudio(44100, 1, 8, 512);
-		swapAudio = olc::SOUND::LoadAudioSample("swap.wav");
+		sound_engine.InitialiseAudio();
+		assert(swap_audio.LoadAudioWaveform("swap.wav"));
 	}
 	inline void PlayAudio()
 	{
 #if USE_AUDIO
-		olc::SOUND::PlaySample(swapAudio);
+		sound_engine.PlayWaveform(&swap_audio);
 #endif
 	}
 
@@ -410,14 +410,14 @@ private:
 	{
 		for (const Rect& rect : rects)
 		{
-			FillRect(rect.x, rect.y, rect.width, rect.height, rect.color);
+			FillRectDecal(olc::vf2d(rect.x, rect.y), olc::vf2d(rect.width, rect.height), rect.color);
 		}
 	}
 	inline void DrawStatistics()
 	{
-		DrawString(5, 5, "Rects: " + std::to_string(rects.size()));
-		DrawString(5, 20, "Delay: " + std::to_string(SORTING_DELAY * 100) + " milliseconds");
-		DrawString(5, 35, "Comparisons: " + std::to_string(comparisons));
+		DrawStringDecal(olc::vf2d(5, 5), "Rects: " + std::to_string(rects.size()));
+		DrawStringDecal(olc::vf2d(5, 20), "Delay: " + std::to_string(SORTING_DELAY * 100) + " milliseconds");
+		DrawStringDecal(olc::vf2d(5, 35), "Comparisons: " + std::to_string(comparisons));
 	}
 
 public:
@@ -426,6 +426,8 @@ public:
 		width = ScreenWidth(), height = ScreenHeight();
 		GenerateRects();
 		InitAudio();
+
+		std::this_thread::sleep_for(std::chrono::seconds(10));
 		return true;
 	}
 
@@ -452,8 +454,8 @@ public:
 
 	bool OnUserDestroy() override
 	{
-		olc::SOUND::DestroyAudio();
-	
+		sound_engine.StopAll();
+		sound_engine.DestroyAudio();	
 		return true;
 	}
 
